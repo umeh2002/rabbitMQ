@@ -189,13 +189,13 @@ export const updateAccountAvatar = async (req: any, res: Response) => {
       },
     });
     return res.status(200).json({
-      message: "can see all users",
+      message: "avatar added successfully",
       data: user,
     });
   } catch (error:any) {
     return res.status(404).json({
       data: error.message,
-      message: "error viewing user",
+      message: "error",
     });
   }
 };
