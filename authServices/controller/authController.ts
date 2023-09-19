@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { sendOpeningAccountMail } from "../utils/email";
+import cloudinary from "../utils/cloudinary";
 
 const prisma = new PrismaClient();
 
@@ -172,3 +173,29 @@ export const getOneUser = async(req:Request, res:Response)=>{
           });
     }
 }
+
+export const updateAccountAvatar = async (req: any, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const { sercure_url, public_id } = await cloudinary.uploader.upload(
+      req.file.path
+    );
+    const user = await prisma.authModel.update({
+      where: { id: userId },
+      data: {
+        avatar: sercure_url,
+        avatarUrl: public_id,
+      },
+    });
+    return res.status(200).json({
+      message: "can see all users",
+      data: user,
+    });
+  } catch (error:any) {
+    return res.status(404).json({
+      data: error.message,
+      message: "error viewing user",
+    });
+  }
+};
